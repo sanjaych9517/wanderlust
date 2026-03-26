@@ -101,9 +101,11 @@ app.use((req, res, next) => {
 app.get("/health",(req,res)=>{
   res.send("Health is okay")
 })
-app.use("/", listingsRouter);
+
+app.use("/", userRouter);
 app.use("/listings", listingsRouter);
 app.use("/listings/:id/reviews", reviewsRouter);
+
 
 
 app.use((err, req, res, next) => {
@@ -113,5 +115,5 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(8080, () => {
-  console.log("server is listening to port 8080");
+  console.log("server is listening to port 8080"); 
 });
