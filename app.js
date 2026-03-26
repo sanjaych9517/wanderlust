@@ -98,10 +98,13 @@ app.use((req, res, next) => {
 //   let registeredUser = await  User.register(fakeUser, "helloworld");
 //   res.send(registeredUser);
 // });
-
+app.get("/health",(req,res)=>{
+  res.send("Health is okay")
+})
+app.use("/", userRouter);
 app.use("/listings", listingsRouter);
 app.use("/listings/:id/reviews", reviewsRouter);
-app.use("/", userRouter);
+
 
 app.use((err, req, res, next) => {
   let { statusCode =500, message = "Something went wrong"} = err;
