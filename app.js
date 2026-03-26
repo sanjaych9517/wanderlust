@@ -101,7 +101,7 @@ app.use((req, res, next) => {
 app.get("/health",(req,res)=>{
   res.send("Health is okay")
 })
-app.use("/", userRouter);
+app.use("/", listingsRouter);
 app.use("/listings", listingsRouter);
 app.use("/listings/:id/reviews", reviewsRouter);
 
