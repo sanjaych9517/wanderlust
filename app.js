@@ -1,3 +1,10 @@
+const dns = require("dns");
+
+dns.setServers(["8.8.8.8", "8.8.4.4"]);
+if(process.env.NODE_ENV !="production"){
+    require('dotenv').config();
+}
+
 if(process.env.NODE_ENV != "production") {
   require("dotenv").config();
 }
@@ -10,7 +17,7 @@ const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 const ExpressError = require("./utils/ExpressError.js");
 const session = require("express-session");
-const MongoStore = require("connect-mongo");
+const MongoStore = require("connect-mongo").default;
 const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
@@ -21,7 +28,9 @@ const reviewsRouter = require("./routes/review.js");
 const userRouter = require("./routes/user.js");
 
 
-const dbUrl = process.env.ATLASBD_URL;
+const dbUrl = process.env.ATLASDB_URL;  // for server
+
+// const dbUrl = process.env.MONGO_URL; // for local host
 
 main()
   .then(() => {
@@ -42,21 +51,21 @@ app.use(methodOverride("_method"));
 app.engine('ejs', ejsMate);
 app.use(express.static(path.join(__dirname, "/public"))); 
 
-// const store = MongoStore.create({
-//   mongoUrl: dbUrl, 
-//   crypto: {
-//     secret: process.env.SECRET,
-//   },
-//   touchAfter: 24*3600,
-// });
+const store = MongoStore.create({
+  mongoUrl: dbUrl, 
+  crypto: {
+    secret: process.env.SECRET,
+  },
+  touchAfter: 24*3600,
+});
 
-// store.on("error", () => {
-//   console.log("ERROR in MONGO SESSION STORE", err);
-// });
+store.on("error", (err) => {
+  console.log("ERROR in MONGO SESSION STORE", err);
+});
 
 
 const sessionOptions = {
-  // store,
+  store,
   secret: process.env.SECRET,
   resave: false,
   saveUninitialized: true,
